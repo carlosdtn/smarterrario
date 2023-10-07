@@ -1,10 +1,9 @@
 import {
-  Alert,
+  StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   ViewStyle,
-  TextStyle,
-  StyleSheet,
 } from "react-native";
 
 interface AnchorProps {
@@ -21,7 +20,7 @@ export default function Anchor({
   textStyle,
 }: AnchorProps) {
   return (
-    <TouchableOpacity onPress={() => {}} style={[styles.button, style]}>
+    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
       <Text style={[styles.buttonText, textStyle]}>{children}</Text>
     </TouchableOpacity>
   );

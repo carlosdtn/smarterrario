@@ -20,15 +20,8 @@ export default function Button({
   style,
   textStyle,
 }: ButtonProps) {
-  const handleButtonPress = () => {
-    Alert.alert("Botón preestablecido presionado");
-  };
-
   return (
-    <TouchableOpacity
-      onPress={handleButtonPress}
-      style={[styles.button, style]}
-    >
+    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
       <Text style={[styles.buttonText, textStyle]}>{children}</Text>
     </TouchableOpacity>
   );
@@ -41,7 +34,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     alignItems: "center",
-    width: "80%",
+    width: "auto",
     borderWidth: 1,
   },
   buttonText: {
