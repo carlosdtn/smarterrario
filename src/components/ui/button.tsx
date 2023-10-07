@@ -1,10 +1,10 @@
 import {
-  Alert,
+  StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   ViewStyle,
-  TextStyle,
-  StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 
 interface ButtonProps {
@@ -12,6 +12,7 @@ interface ButtonProps {
   onPress?: () => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  loading?: boolean;
 }
 
 export default function Button({
@@ -19,10 +20,25 @@ export default function Button({
   onPress,
   style,
   textStyle,
+  loading,
+  ...props
 }: ButtonProps) {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-      <Text style={[styles.buttonText, textStyle]}>{children}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.button,
+        style,
+        loading && { opacity: 0.5, paddingVertical: 13.5 },
+      ]}
+      disabled={loading}
+      {...props}
+    >
+      {loading ? (
+        <ActivityIndicator color="white" size="small" />
+      ) : (
+        <Text style={[styles.buttonText, textStyle]}>{children}</Text>
+      )}
     </TouchableOpacity>
   );
 }
