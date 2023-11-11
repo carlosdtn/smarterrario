@@ -1,5 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
@@ -10,14 +10,14 @@ import Anchor from "../../../components/ui/anchor";
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
 import { FIREBASE_AUTH } from "../../../services/firebase-config";
-import { UserProps } from "../../../utils/types";
+import { User } from "../../../utils/types";
 import { RootStackParamList } from "../utils/types";
 import styles from "./styles";
 
-type SignInProps = StackNavigationProp<RootStackParamList, "SignIn">;
+type SignUpProps = StackNavigationProp<RootStackParamList, "SignUp">;
 
-export default function SignIn(props: {
-  navigation: SignInProps;
+export default function SignUpScreen(props: {
+  navigation: SignUpProps;
   children?: React.ReactNode;
   route?: any;
 }) {
@@ -27,8 +27,9 @@ export default function SignIn(props: {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Omit<UserProps, "name">>({
+  } = useForm<Pick<User, "name" | "email" | "password">>({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -39,7 +40,7 @@ export default function SignIn(props: {
     setLoading(true);
     try {
       const { email, password } = data;
-      await signInWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       Toast.show({
         type: "error",
@@ -51,8 +52,8 @@ export default function SignIn(props: {
     }
   };
 
-  const goToSignUp = () => {
-    props.navigation.push("SignUp");
+  const goToSignIn = () => {
+    props.navigation.push("SignIn");
   };
 
   return (
@@ -64,39 +65,54 @@ export default function SignIn(props: {
         <View style={styles.brandContainer}>
           <Logo width="70" height="70" />
           <Text style={styles.title}>SmartErrario</Text>
-          <Text style={styles.subtitle}>INICIA SESIÓN</Text>
+          <Text style={styles.subtitle}>CREA UNA CUENTA</Text>
         </View>
         <View style={styles.form}>
           <View style={styles.groupInput}>
             <Controller
               control={control}
-              name="email"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  placeholder="jperez@gmail.com"
-                  label="Correo electrónico"
-                  onBlur={onBlur}
+                  placeholder="Juan Perez"
+                  label="Nombres"
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   value={value}
-                  error={errors.email}
+                  error={errors.name}
                 />
               )}
+              name="name"
               rules={{ required: "Este campo es obligatorio" }}
             />
             <Controller
               control={control}
-              name="password"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="jperez@gmail.com"
+                  label="Correo electrónico"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  error={errors.email}
+                />
+              )}
+              name="email"
+              rules={{ required: "Este campo es obligatorio" }}
+            />
+            <Controller
+              control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   placeholder="Escribe una contraseña..."
                   label="Contraseña"
-                  onBlur={onBlur}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   value={value}
                   error={errors.password}
                   secureTextEntry
                 />
               )}
+              name="password"
               rules={{ required: "Este campo es obligatorio" }}
             />
           </View>
@@ -113,13 +129,11 @@ export default function SignIn(props: {
               onPress={handleSubmit(onSubmit)}
               loading={loading}
             >
-              Iniciar sesión
+              Crear una cuenta
             </Button>
-            <View>
-              <View style={styles.groupedText}>
-                <Text style={styles.authText}>¿Aún no tienes una cuenta?</Text>
-                <Anchor onPress={goToSignUp}>Crea una cuenta</Anchor>
-              </View>
+            <View style={styles.groupedText}>
+              <Text style={styles.authText}>¿Ya tienes una cuenta?</Text>
+              <Anchor onPress={goToSignIn}>Inicia Sesión</Anchor>
             </View>
           </View>
         </View>

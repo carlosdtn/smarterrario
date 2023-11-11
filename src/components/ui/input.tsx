@@ -10,22 +10,48 @@ interface InputProps {
   onBlur?: () => void;
   error?: FieldError | undefined;
   secureTextEntry?: boolean;
+  styleInput?: {
+    [key: string]: string | number;
+  };
+  styleLabel?: {
+    [key: string]: string | number;
+  };
+  styleContainer?: {
+    [key: string]: string | number;
+  };
+  disabled?: boolean;
+  defaultValue?: string;
 }
 
 const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
-  { label, placeholder, value, onChangeText, error, secureTextEntry, ...props },
+  {
+    label,
+    placeholder,
+    value,
+    onChangeText,
+    error,
+    secureTextEntry,
+    styleInput,
+    styleLabel,
+    styleContainer,
+    disabled,
+    defaultValue,
+    ...props
+  },
   ref
 ) => {
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={[styles.container, styleContainer]}>
+      {label && <Text style={[styles.label, styleLabel]}>{label}</Text>}
       <TextInput
         ref={ref}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
-        style={[styles.input, error && { borderColor: "#FF0000" }]}
+        style={[styles.input, styleInput, error && { borderColor: "#FF0000" }]}
+        editable={disabled}
+        defaultValue={defaultValue}
         {...props}
       />
       {error && <Text style={styles.error}>{error.message}</Text>}

@@ -13,7 +13,20 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   loading?: boolean;
+  variant?: "primary" | "ghost";
 }
+
+const buttonVariants = {
+  primary: {
+    backgroundColor: "#0BA360",
+    color: "white",
+  },
+  ghost: {
+    paddingHorizontal: 10,
+    backgroundColor: "transparent",
+    borderWidth: 0,
+  },
+};
 
 export default function Button({
   children,
@@ -21,6 +34,7 @@ export default function Button({
   style,
   textStyle,
   loading,
+  variant = "primary",
   ...props
 }: ButtonProps) {
   return (
@@ -28,6 +42,7 @@ export default function Button({
       onPress={onPress}
       style={[
         styles.button,
+        buttonVariants[variant],
         style,
         loading && { opacity: 0.5, paddingVertical: 13.5 },
       ]}
