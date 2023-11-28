@@ -9,10 +9,11 @@ import Logo from "../../../components/icons/logo/logo";
 import Anchor from "../../../components/ui/anchor";
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
-import { FIREBASE_AUTH } from "../../../services/firebase-config";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../../services/firebase-config";
 import { User } from "../../../utils/types";
 import { RootStackParamList } from "../utils/types";
 import styles from "./styles";
+import { doc, setDoc } from "firebase/firestore";
 
 type SignUpProps = StackNavigationProp<RootStackParamList, "SignUp">;
 
@@ -36,11 +37,22 @@ export default function SignUpScreen(props: {
   });
   const auth = FIREBASE_AUTH;
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Pick<User, "name" | "email" | "password">) => {
     setLoading(true);
     try {
-      const { email, password } = data;
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { email, password, name } = data;
+      const location = "Sin especificar";
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const uid = userCredential.user.uid;
+      await setDoc(doc(FIREBASE_DB, "users", uid), {
+        name,
+        email,
+        location,
+      });
     } catch (error: any) {
       Toast.show({
         type: "error",
@@ -64,7 +76,7 @@ export default function SignUpScreen(props: {
       >
         <View style={styles.brandContainer}>
           <Logo width="70" height="70" />
-          <Text style={styles.title}>SmartErrario</Text>
+          <Text style={styles.title}>SmarTerrario</Text>
           <Text style={styles.subtitle}>CREA UNA CUENTA</Text>
         </View>
         <View style={styles.form}>

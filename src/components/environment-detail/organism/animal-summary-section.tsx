@@ -12,8 +12,15 @@ export default function AnimalSummarySection({
 }: AnimalSummarySectionProps) {
   return (
     <View style={styles.container}>
-      <View>
-        <Image style={styles.avatarImage} source={{ uri: animal?.photo }} />
+      <View style={styles.avatarContainer}>
+        <Image
+          style={styles.avatarImage}
+          source={
+            animal?.photo
+              ? { uri: animal.photo }
+              : require("../../../../assets/environment-placeholder.png")
+          }
+        />
         <EnviromentTag
           tagStyles={styles.tagStyles}
           animalType={animal?.animalType || AnimalType.Reptile}
@@ -44,6 +51,12 @@ const styles = StyleSheet.create({
   avatarImage: {
     width: 180,
     height: 150,
+    borderRadius: 10,
+  },
+  avatarContainer: {
+    borderWidth: 1,
+    position: "relative",
+    borderColor: "gray",
     borderRadius: 10,
   },
   title: {

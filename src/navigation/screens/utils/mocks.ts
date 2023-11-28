@@ -12,57 +12,63 @@ export const USER_MOCK: User = {
 
 export const ANIMALS_MOCK: Animal[] = [
   {
-    id: 1,
+    id: "1",
     animalType: AnimalType.Rondent,
     title: "Henry",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Hamster_im_Gras.jpg/640px-Hamster_im_Gras.jpg",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
   {
-    id: 2,
+    id: "2",
     animalType: AnimalType.Reptile,
     title: "Calypso",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo:
       "https://www.fauna-flora.org/wp-content/uploads/2023/06/new-iguana-species-found-hiding-in-plain-sight-1024x614.png",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
   {
-    id: 3,
+    id: "3",
     animalType: AnimalType.Arachnid,
     title: "Spidey",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo:
       "https://www.zooplus.es/magazine/wp-content/uploads/2023/05/Tarantula-Goliat-Theraphosa-blondi.jpeg",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
   {
-    id: 4,
+    id: "4",
     animalType: AnimalType.Rondent,
     title: "Remy",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo:
       "https://e00-elmundo.uecdn.es/assets/multimedia/imagenes/2014/01/14/13896967491188.jpg",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
   {
-    id: 5,
+    id: "5",
     animalType: AnimalType.Rondent,
     title: "Coco",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo:
       "https://roedoresdomesticos.com/wp-content/uploads/2017/06/erizo-featured-roedoresdomesticos.jpg",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
   {
-    id: 6,
+    id: "6",
     animalType: AnimalType.Reptile,
     title: "Pogo",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     photo: "https://www.zoopinto.es/wp-content/uploads/2021/04/Pogona.jpg",
     apiKey: "b1b15e88fa797225412429c1c50c122a1",
+    channel: "1231231",
   },
 ];
 
@@ -111,10 +117,10 @@ export const CHARTDATA_MOCK = {
 export const SENSORDATA_MOCK = [
   {
     title: "Temperatura (°C)",
-    value: 25,
+    value: "25",
   },
   {
-    title: "Humedad ",
-    value: 60,
+    title: "Humedad (%)",
+    value: "60",
   },
 ];

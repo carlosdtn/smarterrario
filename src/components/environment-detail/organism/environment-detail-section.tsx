@@ -1,20 +1,15 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList, ScrollView } from "react-native";
 import React from "react";
 import Subtitle from "../../profile/atoms/subtitle";
 import { LineChart } from "react-native-chart-kit";
 import SensorDetailCard from "../molecules/sensor-detail-card";
+import { ChartData, Sensor } from "../../../utils/types";
+import EmptyChart from "../molecules/empty-chart";
+import EmptySensorCard from "../molecules/empty-sensor-card";
 
 interface EnvironmentDetailSectionProps {
-  chartData: {
-    labels: string[];
-    datasets: {
-      data: number[];
-    }[];
-  };
-  sensorData: {
-    title: string;
-    value: number;
-  }[];
+  chartData: ChartData | null;
+  sensorData: Sensor[] | null;
 }
 
 export default function EnvironmentDetailSection({
@@ -22,36 +17,49 @@ export default function EnvironmentDetailSection({
   sensorData,
 }: EnvironmentDetailSectionProps) {
   return (
-    <View style={styles.container}>
-      <Subtitle>Datos de sensores</Subtitle>
-      <View style={styles.detailsContainer}>
-        <LineChart
-          data={chartData}
-          width={350}
-          height={220}
-          yAxisLabel=""
-          yAxisSuffix=""
-          yAxisInterval={1}
-          chartConfig={styles.chartConfig}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-        />
-        <View style={styles.sensorDetails}>
-          {sensorData.map((sensor, index) => {
-            return (
-              <SensorDetailCard
-                key={index}
-                title={sensor.title}
-                value={sensor.value}
-              />
-            );
-          })}
+    <>
+      <View style={styles.container}>
+        <Subtitle>Historial de Temperatura</Subtitle>
+        <View style={styles.detailsContainer}>
+          {chartData === null ? (
+            <EmptyChart />
+          ) : (
+            <LineChart
+              data={chartData}
+              width={350}
+              height={220}
+              yAxisLabel=""
+              yAxisSuffix=""
+              yAxisInterval={1}
+              chartConfig={styles.chartConfig}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+            />
+          )}
+          <Subtitle>Datos de Sensores</Subtitle>
         </View>
       </View>
-    </View>
+      <View style={styles.sensorDetails}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.sensorContainer}>
+            {sensorData === null ? (
+              <EmptySensorCard />
+            ) : (
+              sensorData?.map((sensor) => (
+                <SensorDetailCard
+                  key={sensor.title}
+                  title={sensor.title}
+                  value={sensor.value}
+                />
+              ))
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    </>
   );
 }
 
@@ -79,5 +87,13 @@ const styles = StyleSheet.create({
       stroke: "#ffa726",
     },
   },
-  sensorDetails: { display: "flex", flexDirection: "row", gap: 10 },
+  sensorDetails: { display: "flex", width: "100%", flexDirection: "row" },
+  sensorContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 19,
+  },
 });

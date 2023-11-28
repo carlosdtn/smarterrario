@@ -1,4 +1,4 @@
-import { ForwardRefRenderFunction, forwardRef } from "react";
+import { ForwardRefRenderFunction } from "react";
 import { FieldError } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
@@ -50,7 +50,7 @@ const Select: ForwardRefRenderFunction<TextInput, InputProps> = ({
           }}
           value={value}
           items={items}
-          onValueChange={() => onValueChange}
+          onValueChange={(newValue) => onValueChange && onValueChange(newValue)}
           style={{
             inputIOS: {
               paddingHorizontal: 10,

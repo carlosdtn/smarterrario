@@ -7,4 +7,5 @@ export type RootStackParamList = {
   Profile: undefined;
   RegisterEnvironment: undefined;
   EnvironmentDetail: undefined;
+  EditEnvironment: undefined;
 };

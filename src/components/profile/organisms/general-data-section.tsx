@@ -1,29 +1,53 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
-import Subtitle from "../atoms/subtitle";
-import Button from "../../ui/button";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { StyleSheet, View } from "react-native";
+import { User, UserDoc } from "../../../utils/types";
+import Button from "../../ui/button";
 import Input from "../../ui/input";
-import { User } from "../../../utils/types";
+import Subtitle from "../atoms/subtitle";
+import UserService from "../../../services/user/user-service";
+import { FIREBASE_AUTH } from "../../../services/firebase-config";
+import Toast from "react-native-toast-message";
 
 interface GeneralDataSectionProps {
-  user: Pick<User, "location" | "password">;
+  user: UserDoc | null;
 }
 
 export default function GeneralDataSection({ user }: GeneralDataSectionProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<Pick<User, "location" | "password">>({
     defaultValues: {
-      location: user.location || "Sin ubicación",
+      location: user?.location || "Sin ubicación",
       password: "",
     },
   });
+  const FBUser = new UserService(FIREBASE_AUTH.currentUser);
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: Pick<User, "location" | "password">) => {
+    try {
+      setLoading(true);
+      await FBUser.updateGeneralData({
+        location: data.location,
+        password: data.password,
+      });
+      setLoading(false);
+      Toast.show({
+        type: "success",
+        text1: "Datos actualizados",
+        text2: "Los datos se han actualizado correctamente",
+      });
+    } catch (error: any) {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Ocurrió un error",
+        text2: error.message,
+      });
+    }
   };
 
   return (
@@ -36,7 +60,7 @@ export default function GeneralDataSection({ user }: GeneralDataSectionProps) {
             name="location"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                placeholder={user.location}
+                placeholder="Ciudad, País"
                 label="Ubicación"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -63,7 +87,6 @@ export default function GeneralDataSection({ user }: GeneralDataSectionProps) {
                 styleLabel={styles.labelProfile}
               />
             )}
-            rules={{ required: "Este campo es obligatorio" }}
           />
         </View>
         <Button
@@ -74,6 +97,7 @@ export default function GeneralDataSection({ user }: GeneralDataSectionProps) {
             fontSize: 18,
           }}
           onPress={handleSubmit(onSubmit)}
+          loading={loading}
         >
           Guardar
         </Button>

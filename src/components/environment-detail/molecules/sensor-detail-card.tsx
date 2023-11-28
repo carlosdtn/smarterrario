@@ -3,7 +3,7 @@ import React from "react";
 
 interface SensorDetailCardProps {
   title: string;
-  value: number;
+  value: string;
 }
 
 export default function SensorDetailCard({
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     gap: 5,
     justifyContent: "center",
-    width: 100,
+    width: 180,
     height: "auto",
     flex: 1,
     alignContent: "center",

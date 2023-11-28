@@ -1,10 +1,14 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { ChartData } from "react-native-chart-kit/dist/HelperTypes";
+import { useSelector } from "react-redux";
 import AnimalSummarySection from "../../../components/environment-detail/organism/animal-summary-section";
 import EnvironmentDetailSection from "../../../components/environment-detail/organism/environment-detail-section";
 import OptionsSection from "../../../components/environment-detail/organism/options-section";
-import { ANIMALS_MOCK, CHARTDATA_MOCK, SENSORDATA_MOCK } from "../utils/mocks";
+import ThingSpeakService from "../../../services/thingspeak/thingspeak-service";
+import { formatChartData, formatSensorData } from "../../../utils/helpers";
+import { Animal, Sensor } from "../../../utils/types";
 import { RootStackParamList } from "../utils/types";
 
 type EnviromentDetailProps = StackNavigationProp<
@@ -17,24 +21,43 @@ export default function EnvironmentDetail(props: {
   children?: React.ReactNode;
   route?: any;
 }) {
+  const animals = useSelector(
+    (state: { environment: { environment: Animal[] } }) =>
+      state.environment.environment
+  );
   const { id } = props.route.params;
+
   const getAnimalById = (id: string) => {
-    return ANIMALS_MOCK.find((animal) => animal.id === Number(id));
+    return animals?.find((animal) => animal.id === id);
+  };
+  const animal = getAnimalById(id);
+
+  const ts = new ThingSpeakService();
+
+  const [chartData, setChartData] = useState<ChartData | null>(null);
+  const [sensorData, setSensorData] = useState<Sensor[] | null>(null);
+
+  const getChartData = async () => {
+    if (!animal) return null;
+    const data = await ts.fetchAllFieldData(animal.channel, animal.apiKey, 4);
+    const chart = formatChartData(data);
+    const sensors = formatSensorData(data.feeds);
+    setChartData(chart);
+    setSensorData(sensors);
   };
 
-  const animal = getAnimalById(id);
+  useEffect(() => {
+    getChartData();
+  }, []);
 
   return (
     <View style={styles.container}>
       {/* Resumen */}
       <AnimalSummarySection animal={animal} />
       {/* Opciones */}
-      <OptionsSection />
+      <OptionsSection navigation={props.navigation} environmentID={id} />
       {/* Detalles de sensores */}
-      <EnvironmentDetailSection
-        chartData={CHARTDATA_MOCK}
-        sensorData={SENSORDATA_MOCK}
-      />
+      <EnvironmentDetailSection chartData={chartData} sensorData={sensorData} />
     </View>
   );
 }

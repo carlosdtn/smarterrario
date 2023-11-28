@@ -1,24 +1,28 @@
 import { useEffect, useRef, useState } from "react";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import UserService from "../../../services/user/user-service";
+import { FIREBASE_AUTH } from "../../../services/firebase-config";
+import { UserDoc } from "../../../utils/types";
 import IconCheck from "../../icons/check/check";
 import IconPencil from "../../icons/pencil/pencil";
 import Button from "../../ui/button";
+import ImageUploader from "../../ui/image-uploader";
 import Input from "../../ui/input";
-import IconUpload from "../../icons/upload/upload";
-import { User } from "../../../utils/types";
 
 interface AvatarSectionProps {
-  user: Pick<User, "name" | "photo">;
+  user: UserDoc | null;
 }
 
 export default function AvatarSection({ user }: AvatarSectionProps) {
+  const MIN_NAME_LENGTH = 3;
+  const MAX_NAME_LENGTH = 20;
   const inputRef = useRef<TextInput>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [name, setName] = useState<string>(user.name);
+  const [name, setName] = useState<string>(user?.name || "");
+  const FBUser = new UserService(FIREBASE_AUTH.currentUser);
 
   const handleNameEdit = () => {
-    const MIN_NAME_LENGTH = 3;
-    const MAX_NAME_LENGTH = 20;
+    FBUser.updateUser(user, "name", name);
 
     if (name.length === 0) {
       alert("El nombre no puede estar vacío");
@@ -39,17 +43,11 @@ export default function AvatarSection({ user }: AvatarSectionProps) {
 
   return (
     <>
-      <View style={styles.avatarContainer}>
-        <Image
-          style={styles.avatarImage}
-          source={{
-            uri: user.photo,
-          }}
-        />
-        <Button style={styles.avatarImageEdit}>
-          <IconUpload width="24" height="24" color="white" />
-        </Button>
-      </View>
+      <ImageUploader
+        currentImage={user?.photo}
+        onChange={(uri) => FBUser.updateUserAvatar(user, uri)}
+        isUser
+      />
       <View style={styles.avatarNameContainer}>
         <Input
           styleInput={styles.avatarInput}

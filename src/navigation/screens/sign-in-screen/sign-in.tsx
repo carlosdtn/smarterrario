@@ -63,7 +63,7 @@ export default function SignIn(props: {
       >
         <View style={styles.brandContainer}>
           <Logo width="70" height="70" />
-          <Text style={styles.title}>SmartErrario</Text>
+          <Text style={styles.title}>SmarTerrario</Text>
           <Text style={styles.subtitle}>INICIA SESIÓN</Text>
         </View>
         <View style={styles.form}>

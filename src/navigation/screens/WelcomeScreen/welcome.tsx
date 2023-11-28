@@ -26,7 +26,7 @@ export default function WelcomeScreen(props: {
     <SafeAreaView style={styles.welcomeContainer}>
       <View style={styles.brandContainer}>
         <Logo />
-        <Text style={styles.title}>SmartErrario</Text>
+        <Text style={styles.title}>SmarTerrario</Text>
         <Text style={styles.slogan}>
           La tecnología que protege a los animales
         </Text>

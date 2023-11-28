@@ -1,16 +1,23 @@
-import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
-import Button from "../../ui/button";
-import { FIREBASE_AUTH } from "../../../services/firebase-config";
+import { Image, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
-import IconLogout from "../../icons/logout/logout";
-import IconUser from "../../icons/user/user";
+import { FIREBASE_AUTH } from "../../../services/firebase-config";
+import { DEFAULT_PHOTO } from "../../../utils/constants";
 import { User } from "../../../utils/types";
 import IconAdd from "../../icons/add/add";
+import IconLogout from "../../icons/logout/logout";
+import IconUser from "../../icons/user/user";
+import Button from "../../ui/button";
+import { clearUser, setUser } from "../../../redux/reducers/user/userSlice";
+import {
+  clearEnvironment,
+  setEnvironment,
+} from "../../../redux/reducers/environment/environmentSlice";
+import store from "../../../redux/store";
 
 interface AccountSectionProps {
   navigation: any;
-  user: Pick<User, "name" | "location" | "photo">;
+  user: Pick<User, "name" | "email" | "photo" | "location"> | null;
 }
 
 export default function AccountSection({
@@ -19,6 +26,8 @@ export default function AccountSection({
 }: AccountSectionProps) {
   const handleLogout = () => {
     FIREBASE_AUTH.signOut();
+    store.dispatch(clearUser());
+    store.dispatch(clearEnvironment());
     Toast.show({
       type: "success",
       text1: "Estado de la sesión",
@@ -36,15 +45,13 @@ export default function AccountSection({
           <Image
             style={styles.avatarImage}
             source={{
-              uri: user.photo,
+              uri: user?.photo ? user?.photo : DEFAULT_PHOTO,
             }}
           />
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.location}>
-            {user.location ? user.location : "Sin ubicación"}
-          </Text>
+          <Text style={styles.name}>{user ? user?.name : "..."}</Text>
+          <Text style={styles.location}>{user ? user?.location : "..."}</Text>
         </View>
       </View>
       <View style={styles.optionsContainer}>

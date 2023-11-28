@@ -5,3 +5,4 @@ export { default as DashboardScreen } from "./dashboard-screen/dashboard";
 export { default as ProfileScreen } from "./profile-screen/profile";
 export { default as RegisterEnvironment } from "./register-environment-screen/register-environment";
 export { default as EnvironmentDetail } from "./enviroment-detail-screen/environment-detail";
+export { default as EditEnvironment } from "./edit-environment-screen/edit-environment";

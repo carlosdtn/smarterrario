@@ -1,5 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -14,46 +14,66 @@ import { Animal, AnimalType } from "../../../utils/types";
 import { EnvFormStyles } from "../utils/shared/styles";
 import { RootStackParamList } from "../utils/types";
 
-type RegisterEnvironmentProps = StackNavigationProp<
+type EditEnvironmentProps = StackNavigationProp<
   RootStackParamList,
-  "RegisterEnvironment"
+  "EditEnvironment"
 >;
 
-export default function RegisterEnvironment(props: {
-  navigation: RegisterEnvironmentProps;
+export default function EditEnvironmenScreen(props: {
+  navigation: EditEnvironmentProps;
   children?: React.ReactNode;
   route?: any;
 }) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [envForm, setEnvForm] = useState<Animal>();
+  const environmentID = props.route.params.environmentID;
+  const enviroments = new EnvironmentService(FIREBASE_AUTH.currentUser);
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Animal>({
     defaultValues: {
-      title: "",
-      description: "",
-      photo: "",
-      animalType: AnimalType.Rondent,
-      apiKey: "",
-      channel: "",
+      title: envForm?.title,
+      description: envForm?.description,
+      photo: envForm?.photo,
+      animalType: envForm?.animalType,
+      apiKey: envForm?.apiKey,
+      channel: envForm?.channel,
     },
   });
-  const enviroments = new EnvironmentService(FIREBASE_AUTH.currentUser);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const getEnvironment = () => {
+    enviroments
+      .getEnvironmentById(environmentID)
+      .then((env) => {
+        setEnvForm(env);
+        reset(env);
+      })
+      .catch((error) => {
+        console.log("error ", error);
+      });
+  };
+
+  useEffect(() => {
+    getEnvironment();
+  }, []);
 
   const onSubmit = async (data: Animal) => {
     try {
       setLoading(true);
-      await enviroments.createEnvironment(data);
+      await enviroments.updateEnvironment(data);
       props.navigation.push("Dashboard");
       Toast.show({
         type: "success",
-        text1: "Entorno registrado",
-        text2: "El entorno se ha registrado correctamente",
+        text1: "Entorno ha sido actualizado",
+        text2: "El entorno se ha actualizado correctamente",
       });
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
+      console.log("error ", error);
       Toast.show({
         type: "error",
         text1: "Ocurrió un error",
@@ -82,7 +102,10 @@ export default function RegisterEnvironment(props: {
             control={control}
             name="photo"
             render={({ field: { onChange } }) => (
-              <ImageUploader onChange={onChange} />
+              <ImageUploader
+                currentImage={envForm?.photo}
+                onChange={onChange}
+              />
             )}
           />
           <Controller
@@ -185,7 +208,7 @@ export default function RegisterEnvironment(props: {
           onPress={handleSubmit(onSubmit)}
           loading={loading}
         >
-          Registrar
+          Actualizar
         </Button>
       </ScrollView>
     </KeyboardAvoidingView>

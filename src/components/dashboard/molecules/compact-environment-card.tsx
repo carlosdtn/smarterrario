@@ -3,13 +3,16 @@ import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 interface CompactEnvironmentCardProps {
   animal: {
-    id: number;
+    id: string;
     name: string;
     photo: string;
   };
   cardStyle?: { [key: string]: string | number };
   navigation?: {
-    navigate: (screen: string, params?: { [key: string]: number }) => void;
+    navigate: (
+      screen: string,
+      params?: { [key: string]: number | string }
+    ) => void;
   };
 }
 
@@ -28,7 +31,14 @@ export default function CompactEnvironmentCard({
       style={[styles.container, cardStyle]}
       onPress={handleSelectAnimal}
     >
-      <Image style={styles.animalImage} source={{ uri: animal.photo }} />
+      <Image
+        style={styles.animalImage}
+        source={
+          animal.photo
+            ? { uri: animal.photo }
+            : require("../../../../assets/environment-placeholder.png")
+        }
+      />
       <Text style={styles.title}>{animal.name}</Text>
     </TouchableOpacity>
   );

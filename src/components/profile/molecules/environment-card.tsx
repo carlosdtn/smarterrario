@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Animal } from "../../../utils/types";
 import IconPencil from "../../icons/pencil/pencil";
@@ -11,12 +11,17 @@ interface EnvironmentCardProps {
   cardStyle?: {
     [key: string]: string | number;
   };
+  navigation?: any;
 }
 
 export default function EnvironmentCard({
   animal,
   cardStyle,
+  navigation,
 }: EnvironmentCardProps) {
+  const handleGoToEdit = () => {
+    navigation.push("EditEnvironment", { environmentID: animal?.id });
+  };
   return (
     <View style={[styles.environmentCard, cardStyle]}>
       <View style={styles.environmentCardTop}>
@@ -29,11 +34,12 @@ export default function EnvironmentCard({
             paddingHorizontal: 0,
             paddingVertical: 0,
           }}
+          onPress={handleGoToEdit}
         >
           <IconPencil width="26" height="26" color="white" />
         </Button>
       </View>
-      <View>
+      <View style={styles.environmentCardInfo}>
         <Text style={styles.environmentCardTitle}>{animal.title}</Text>
         <Text style={styles.environmentCardDescription}>
           {animal.description.length > 100
@@ -59,6 +65,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#4D6158",
     paddingVertical: 10,
+    minHeight: 130,
   },
   environmentCardTop: {
     display: "flex",
@@ -74,5 +81,12 @@ const styles = StyleSheet.create({
   },
   environmentCardDescription: {
     color: "white",
+  },
+
+  environmentCardInfo: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
 });

@@ -2,19 +2,13 @@ import React, { useContext } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { CategoryContext } from "../../../context/category-context";
 import { categories } from "../../../navigation/screens/utils/mocks";
-import { AnimalType } from "../../../utils/types";
+import { Animal } from "../../../utils/types";
 import Subtitle from "../../profile/atoms/subtitle";
 import CompactEnvironmentCard from "../molecules/compact-environment-card";
 import EmptyList from "../organisms/empty-list";
 
 interface EnvironmentCardProps {
-  animals: {
-    id: number;
-    animalType: AnimalType;
-    title: string;
-    description: string;
-    photo: string;
-  }[];
+  animals: Animal[] | null;
   navigation?: any;
 }
 
@@ -24,9 +18,14 @@ export default function EnviromentSection({
 }: EnvironmentCardProps) {
   const { index } = useContext(CategoryContext);
 
-  const filteredAnimals = animals.filter(
-    (animal) => categories.indexOf(animal.animalType) === index
-  );
+  const filteredAnimals = () => {
+    if (animals) {
+      return animals.filter(
+        (animal) => categories.indexOf(animal.animalType) === index
+      );
+    }
+    return [];
+  };
 
   const renderEmptyList = () => {
     return <EmptyList />;
@@ -42,7 +41,7 @@ export default function EnviromentSection({
           showsVerticalScrollIndicator={false}
           numColumns={2}
           keyExtractor={(item) => String(item.id)}
-          data={[...filteredAnimals]}
+          data={filteredAnimals()}
           renderItem={(render) => (
             <CompactEnvironmentCard
               animal={{

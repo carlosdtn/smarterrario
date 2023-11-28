@@ -8,6 +8,7 @@ import {
   ProfileScreen,
   RegisterEnvironment,
   EnvironmentDetail,
+  EditEnvironment,
 } from "../screens";
 import { RootStackParamList } from "../screens/utils/types";
 import { User, onAuthStateChanged } from "firebase/auth";
@@ -15,6 +16,8 @@ import { FIREBASE_AUTH } from "../../services/firebase-config";
 import Toast from "react-native-toast-message";
 import Logo from "../../components/icons/logo/logo";
 import { CategoryProvider } from "../../context/category-context";
+import { Provider } from "react-redux";
+import store from "../../redux/store";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -24,7 +27,6 @@ export default function Navigation() {
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
-        // console.log(user);
         setUser(user);
         Toast.show({
           type: "success",
@@ -38,58 +40,65 @@ export default function Navigation() {
   }, []);
 
   return (
-    <CategoryProvider>
-      <Stack.Navigator initialRouteName="Welcome">
-        {user ? (
-          <>
-            <Stack.Screen
-              name="Dashboard"
-              component={DashboardScreen}
-              options={appPagesOptions("Dashboard")}
-            />
-            <Stack.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={appPagesOptions("Mi Perfil")}
-            />
-            <Stack.Screen
-              name="RegisterEnvironment"
-              component={RegisterEnvironment}
-              options={appPagesOptions("Registro de Entorno")}
-            />
-            <Stack.Screen
-              name="EnvironmentDetail"
-              component={EnvironmentDetail}
-              options={appPagesOptions("Entorno")}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="Welcome"
-              component={WelcomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="SignIn"
-              component={SignInScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUpScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </>
-        )}
-      </Stack.Navigator>
-    </CategoryProvider>
+    <Provider store={store}>
+      <CategoryProvider>
+        <Stack.Navigator initialRouteName="Welcome">
+          {user ? (
+            <>
+              <Stack.Screen
+                name="Dashboard"
+                component={DashboardScreen}
+                options={appPagesOptions("Dashboard")}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={appPagesOptions("Mi Perfil")}
+              />
+              <Stack.Screen
+                name="RegisterEnvironment"
+                component={RegisterEnvironment}
+                options={appPagesOptions("Registro de Entorno")}
+              />
+              <Stack.Screen
+                name="EnvironmentDetail"
+                component={EnvironmentDetail}
+                options={appPagesOptions("Entorno")}
+              />
+              <Stack.Screen
+                name="EditEnvironment"
+                component={EditEnvironment}
+                options={appPagesOptions("Editar Entorno")}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Welcome"
+                component={WelcomeScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </CategoryProvider>
+    </Provider>
   );
 }
 
